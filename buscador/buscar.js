@@ -22,44 +22,92 @@ parseador.on('error', function(err) {
     console.error("Error al leer CSV:", err.message);
 });
 
-let leer = (base) => {
+let leer = (base, pais, anio) => {
     return new Promise((resolve, reject) => {
         fs.readFile(base, 'utf-8', (err, data) => {
             if (err) {
                 reject('El archivo no existe o esta dañado!');
             } else {
+                console.log(anio);
+                console.log(pais);
                 fs.createReadStream(base)
                     .pipe(parseador)
                     .on("end", function() {
                         col.escribir(2, "Se ha terminado de leer el archivo");
                         parseador.end();
+                        let rep = "No se encontro";
+                        //row 1 - 4
+                        for (let i = 0; i < libro.length; i++) {
+                            aux = libro[i];
+                            for (let j = 0; j < aux.length; j++) {
+                                if (j === 1) {
+                                    if (aux[j] == pais) {
+                                        console.log(libro[i]);
+                                    }
+                                }
+                                if (j === 4) {
+                                    if (aux[j] == anio) {
+                                        console.log(libro[i]);
+                                    }
+                                }
+                            }
+                        }
                         resolve(libro);
                     });
             }
         });
     });
 }
-let busqueda = (palabra, base) => {
+let busqueda = (base, pais, anio) => {
     return new Promise((resolve, reject) => {
         fs.readFile(base, 'utf-8', (err, data) => {
             if (err) {
                 reject('El archivo no existe o esta dañado!');
             } else {
+                console.log(anio);
+                console.log(pais);
                 fs.createReadStream(base)
                     .pipe(parseador)
                     .on("end", function() {
                         col.escribir(2, "Se ha terminado de leer el archivo");
                         parseador.end();
-                        var rep = 0;
+                        let rep = "No se encontro";
+                        //row 1 - 4
                         for (let i = 0; i < libro.length; i++) {
                             aux = libro[i];
                             for (let j = 0; j < aux.length; j++) {
-                                if (aux[j] === palabra) {
-                                    rep++;
+                                if (j === 1) {
+                                    if (aux[j] == pais) {
+                                        if (aux[j + 3] == anio) {
+                                            console.log(libro[i]);
+                                            fs.writeFile(`resultados/${pais}-${anio}.txt`, data, (err) => {
+                                                if (err)
+                                                    reject(err);
+                                                else {
+                                                    resolve(`tabla-${base}`);
+                                                }
+
+                                            });
+                                        }
+                                    }
+                                }
+                                if (j === 4) {
+                                    if (aux[j] == anio) {
+                                        if (aux[j - 3] == pais) {
+                                            console.log(libro[i]);
+                                            fs.writeFile(`resultados/${pais}-${anio}.txt`, data, (err) => {
+                                                if (err)
+                                                    reject(err);
+                                                else {
+                                                    resolve(`tabla-${base}`);
+                                                }
+
+                                            });
+                                        }
+                                    }
                                 }
                             }
                         }
-                        console.log(rep);
                         resolve(libro);
                     });
             }

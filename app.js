@@ -6,7 +6,7 @@ let comando = argv._[0];
 
 switch (comando) {
     case 'mostrar':
-        leer(argv.archivo)
+        leer(argv.archivo, argv.pais, argv.anio)
             .then(archivo => col.escribir(3, `Archivo leído: ${archivo[0]}`))
             .catch(er => col.escribir(1, er));
         col.escribir(2, 'leyendo...')
