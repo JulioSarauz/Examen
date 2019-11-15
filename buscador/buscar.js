@@ -64,8 +64,6 @@ let busqueda = (base, pais, anio) => {
             if (err) {
                 reject('El archivo no existe o esta dañado!');
             } else {
-                console.log(anio);
-                console.log(pais);
                 fs.createReadStream(base)
                     .pipe(parseador)
                     .on("end", function() {
